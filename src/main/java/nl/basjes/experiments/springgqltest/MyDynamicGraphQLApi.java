@@ -18,6 +18,9 @@
 package nl.basjes.experiments.springgqltest;
 
 
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.util.TraversalControl.CONTINUE;
+
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
 import graphql.schema.FieldCoordinates;
@@ -30,24 +33,18 @@ import graphql.schema.GraphQLTypeVisitor;
 import graphql.schema.GraphQLTypeVisitorStub;
 import graphql.util.TraversalControl;
 import graphql.util.TraverserContext;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-import java.util.stream.Collectors;
-
-import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
-import static graphql.util.TraversalControl.CONTINUE;
-
-@Configuration(proxyBeanMethods = false)
-@SuppressWarnings("java:S1854") // https://community.sonarsource.com/t/unresolved-variable-in-anonymous-class-s1854-remove-this-useless-assignment-to-local-variable-unknown/46076
+//@Configuration(proxyBeanMethods = false)
+@SuppressWarnings("java:S1854")
+// https://community.sonarsource.com/t/unresolved-variable-in-anonymous-class-s1854-remove-this-useless-assignment-to-local-variable-unknown/46076
 public class MyDynamicGraphQLApi {
 
     private static final Logger LOG = LogManager.getLogger(MyDynamicGraphQLApi.class);
 
-    @Bean
-    GraphQLTypeVisitor addVersionToSchema() {
+    public static GraphQLTypeVisitor addVersionToSchema() {
         // New type
         GraphQLObjectType version = GraphQLObjectType
             .newObject()
@@ -100,7 +97,7 @@ public class MyDynamicGraphQLApi {
         };
     }
 
-    static DataFetcher<?> getVersionDataFetcher = environment -> {
+    public static DataFetcher<?> getVersionDataFetcher = environment -> {
         String arguments = environment
             .getArguments()
             .entrySet()
@@ -114,7 +111,7 @@ public class MyDynamicGraphQLApi {
         return result;
     };
 
-    static DataFetcher<?> testDataFetcher = environment -> {
+    public static DataFetcher<?> testDataFetcher = environment -> {
         String arguments = environment
             .getArguments()
             .entrySet()
